@@ -54,6 +54,11 @@ public class BigNumber {
 		int max_pos = strNum.length()-1; //minus one, since array starts at zero
 		
 		//create the head node
+		//From Devin: Shouldn't this be either 1 or negative 1 (or maybe 0 or 1), regardless, so we can differentiate between
+		//negative and positive BigNumbers? I thought he mentioned that in class. In which case, this would need to check 
+		//whether the first character in the string (not the one at max_pos) is a "-" or if it's a number, and define the 
+		//"number" data field of the head accordingly. (Reason 1 why I want to work on this in person lol).
+		
 		Digit n = new Digit(Integer.parseInt(nums[max_pos]));
 		head = n;
 		n.previous=head;
