@@ -54,17 +54,11 @@ public class BigNumber {
 		int max_pos = strNum.length()-1; //minus one, since array starts at zero
 		
 		//create the head node
-		//From Devin: Shouldn't this be either 1 or negative 1 (or maybe 0 or 1), regardless, so we can differentiate between
-		//negative and positive BigNumbers? I thought he mentioned that in class. In which case, this would need to check 
-		//whether the first character in the string (not the one at max_pos) is a "-" or if it's a number, and define the 
-		//"number" data field of the head accordingly. (Reason 1 why I want to work on this in person lol).
-		
-		Digit n = new Digit(Integer.parseInt(nums[max_pos]));
-		head = n;
-		n.previous=head;
+		head = new Digit(Integer.parseInt(nums[max_pos]));
+		head.previous=null;
 		
 		Digit iter = new Digit();
-		iter=n;
+		iter=head;
 
 		//count from the bottom of the array up, add the digits to linked list
 		 //minus one, since head already has the last digit
@@ -74,12 +68,12 @@ public class BigNumber {
 			Digit a = new Digit(Integer.parseInt(nums[i]));
 			//situate it into chain
 			a.next=null;
-			//is this statement necessary if the constructor already sets a.next to null?
 			a.previous=iter;
 			iter.next=a;
 			
 			//put the tail at the end
-			tail=a;	
+			
+			tail=a;			
 			//increment the iterator
 			iter=iter.next; 
 		}
@@ -94,9 +88,10 @@ public class BigNumber {
 		//create the first node in the copy list
 		Digit newNum = new Digit(num.head.number);
 		this.head = newNum;
+		this.tail = newNum;
+		this.head.previous=null;
 		
-		//want to ask about this as well
-		Digit lead = new Digit(num.head.next);
+		Digit lead = new Digit(); lead = num.head.next;
 		Digit follow = new Digit(); follow=this.head;
 		
 		for(;lead!=null;lead=lead.next)
@@ -115,11 +110,11 @@ public class BigNumber {
 	  // addition assignment: adding the given number to the current number, +=
 	public void add_assign(final BigNumber b)
 	{
-		Digit sum = new Digit(this.head);
+		Digit sum = new Digit(); sum = this.head;
 	    
 	    // variables needed for loop
-	    Digit iter1 = new Digit(this.head);
-	    Digit iter2 = new Digit(b.head);
+	    Digit iter1 = new Digit(); iter1 = this.head;
+	    Digit iter2 = new Digit(); iter2 = b.head;
 	    
 	    
 	    int carry = 0;
@@ -147,6 +142,7 @@ public class BigNumber {
 	    	
 	    	//assign value
 	    	sum.number=value;	
+	    	this.tail = sum;
 	    	
 	    	//increment
 	    	if(iter1!=null)
@@ -218,11 +214,7 @@ public class BigNumber {
 			{
 				int b_val = iter2.number;
 				value = 0 - b_val + carry;
-			}
-			
-			//how is this one (below) ever going to execute? There's no update of the iterators between here and the 
-			//beginning of the loop, and if it were the case that they were both null, the loop would never have started in 
-			//the first place, right?
+			}	
 			else if (iter1==null && iter2==null)
 				value = carry;
 			
@@ -260,14 +252,9 @@ public class BigNumber {
 	    	    
 	    	  //place the correct digit in the sum
 	    	    sum.previous.number=value;
-	    	}
-			
-			
-			
+	    	}	
 			
 		}
-		
-		
 		
 	}
 	
@@ -275,29 +262,71 @@ public class BigNumber {
 	{
 		
 
-		//boolean compare = first_smaller_than_second(a,b);
-		/*
+		boolean compare = first_smaller_than_second(a,b);
+		
 		if(compare==true)
 		{
 			BigNumber d = new BigNumber(b);
 			d.sub_assign(a);
 			d.simplify();
+			d.make_negative();
 			return d;
 		}
-		*/
+		
 		
 		BigNumber c = new BigNumber(a);
 		c.sub_assign(b);
 		c.simplify();
 		return c;
+	} //end BigNumber sub
+	
+	public void make_negative()
+	{
+		this.tail.number = this.tail.number *-1;
 	}
 	
-	public boolean first_smaller_than_second(final BigNumber a, final BigNumber b)
+	public static boolean first_smaller_than_second(final BigNumber a, final BigNumber b)
 	{
 	
 		//if b > a, return true
+		Digit iter_a = a.head;
+		Digit iter_b = b.head;
 		
+		//first check if the a & b are the same length. here a & b refer to the sizes of a and b
+		//if a>b, return false. if b>a, true.
+		//if a=b, check digit by digit starting at the tail to see a>b,b>a,a=b. if a>b, false. if, b>a true
+		//if a=b, return false
+		int size_a = 0; int size_b=0;
+		for(;iter_a!=null;iter_a=iter_a.next)
+			size_a++;
+		for(;iter_b!=null;iter_b=iter_b.next)
+			size_b++;
 		
+		//check the easy conditions
+		if(size_a>size_b)
+			return false;
+		if(size_b>size_a)
+			return true;
+		
+		//otherwise, size_a=size_b
+		//begin at the most significant digits
+		iter_a=a.tail;
+		iter_b=b.tail;
+		while(iter_a!=a.head && iter_b!=b.head)
+		{
+			if(iter_a.number>iter_b.number)
+				return false;
+			if(iter_b.number>iter_a.number)
+				return true;
+			//otherwise we need to check again!
+			iter_a=iter_a.previous;
+			iter_b=iter_b.previous;
+		}
+		if(a.head.number>=b.head.number)
+			return false;
+		if(b.head.number>a.head.number)
+			return true;
+
 		return false;
 	}
 
