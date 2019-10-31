@@ -218,7 +218,11 @@ public class BigNumber {
 			{
 				int b_val = iter2.number;
 				value = 0 - b_val + carry;
-			}	
+			}
+			
+			//how is this one (below) ever going to execute? There's no update of the iterators between here and the 
+			//beginning of the loop, and if it were the case that they were both null, the loop would never have started in 
+			//the first place, right?
 			else if (iter1==null && iter2==null)
 				value = carry;
 			
