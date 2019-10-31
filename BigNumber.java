@@ -74,12 +74,12 @@ public class BigNumber {
 			Digit a = new Digit(Integer.parseInt(nums[i]));
 			//situate it into chain
 			a.next=null;
+			//is this statement necessary if the constructor already sets a.next to null?
 			a.previous=iter;
 			iter.next=a;
 			
 			//put the tail at the end
-			
-			tail=a;			
+			tail=a;	
 			//increment the iterator
 			iter=iter.next; 
 		}
