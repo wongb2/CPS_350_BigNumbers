@@ -95,7 +95,7 @@ public class BigNumber {
 		Digit newNum = new Digit(num.head.number);
 		this.head = newNum;
 		
-		
+		//want to ask about this as well
 		Digit lead = new Digit(num.head.next);
 		Digit follow = new Digit(); follow=this.head;
 		
