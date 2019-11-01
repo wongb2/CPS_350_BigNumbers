@@ -1,11 +1,12 @@
 package bigNums;
-import java.util.regex.Pattern; //this allows you to split strings
+import java.util.regex.Pattern; // this allows you to split strings
 
-public class BigNumber {
-	Digit head;  // reference to the head node
-	Digit tail;  // reference to the tail node
+public class BigNumber 
+{
+	Digit head;  //	reference to the head node
+	Digit tail;  //	reference to the tail node
 	
-	final int BASE_10 = 10;
+	final int BASE_10 = 10;	// defined constant
 
 	public void display_littleEnd()
 	{
@@ -13,13 +14,16 @@ public class BigNumber {
 		
 		Digit iter = new Digit(); iter = this.head;
 		
-		for(;iter!=tail;iter=iter.next)
-			System.out.print(iter.number);
+		//	NOTE: If this method is just to display the end, do you not need the "System.out.print(iter.number);"
+		//	"iter" traverses through the list and stops before the tail node,
+		//	and displays the int value of each node
+		for(; iter != tail; iter = iter.next)		System.out.print(iter.number);
 		
-			System.out.println(tail.number);
+		// 	NOTE: Just a question, but this line is not part of the for loop right?
+		//	Once "iter" is done traversing, display the "little end" within the tail node
+		System.out.println(tail.number);
 		
-	
-	}
+	}	// 	End display_littleEnd method
 	
 	public void display_bigEnd()
 	{	
@@ -27,41 +31,48 @@ public class BigNumber {
 		
 		Digit iter = new Digit(); iter=this.tail;
 		
-		for(;iter!=head;iter=iter.previous)
-			System.out.print(iter.number);
+		//	"iter" traverses through the list backwards and stops before the head node,
+		//	and displays the int value of each node
+		for(; iter != head; iter = iter.previous)	System.out.print(iter.number);
 		
-			System.out.print(head.number);	
-	}
+		// 	NOTE: Same question, but this line is not part of the for loop right?
+		//	Once "iter" is done traversing, display the "big end" within the head node
+		System.out.print(head.number);	
+		
+	}	// 	End display_bigEnd method
 
+	//	This method gets rid of leading zeros
+	//	NOTE: Does this method actually do anything besides traverse?
 	public void simplify()
 	{
-		//this method gets rid of leading zeros
-		while(this.tail.number==0 && this.tail!=this.head)
+		while(this.tail.number == 0 && this.tail != this.head)
 		{
-			this.tail=this.tail.previous;
+			this.tail = this.tail.previous;
 		}
-	}
+		
+	}	// 	End simplify method
+	
 	public BigNumber(final String strNum)
 	{
-	    // string number (assumed to be correct) to a doubly linked list
+	    	// string number (assumed to be correct) to a doubly linked list
 
 		
 		// WE WILL USE LITTLE ENDIAN NOTATION TO MAKE ADDITION / MULT EASIER. THUS, "123" is 3-2-1
 		// since you add the least significant digits first, then carry
 		
-		//create an array of your numbers
+		// create an array of your numbers
 		String[] nums = strNum.split("");
-		int max_pos = strNum.length()-1; //minus one, since array starts at zero
+		int max_pos = strNum.length() - 1; //minus one, since array starts at zero
 		
-		//create the head node
+		// create the head node
 		head = new Digit(Integer.parseInt(nums[max_pos]));
 		head.previous=null;
 		
 		Digit iter = new Digit();
 		iter=head;
 
-		//count from the bottom of the array up, add the digits to linked list
-		 //minus one, since head already has the last digit
+		// count from the bottom of the array up, add the digits to linked list
+		// minus one, since head already has the last digit
 		for(int i=max_pos-1; i>=0; i--)
 		{
 			//create digit with proper value
